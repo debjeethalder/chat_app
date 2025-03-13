@@ -13,8 +13,7 @@ import { fileURLToPath } from 'url';
 dotenv.config();
 
 // Fix __dirname for ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Set default port
 const port = process.env.PORT || 5000;
@@ -34,10 +33,13 @@ app.use("/api/messages", messageRoutes);
 
 // Serve Frontend in Production Mode
 if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "../frontend/dist")));
+    const frontendPath = path.join(__dirname, "../frontend/dist");
+    console.log("Serving frontend from:", frontendPath);
+    
+    app.use(express.static(frontendPath));
 
     app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+        res.sendFile(path.join(frontendPath, "index.html"));
     });
 }
 
